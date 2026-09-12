@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TuneBox - Music & Ringtones</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#0b0d12;
+    --panel:#12151d;
+    --panel2:#181c26;
+    --border:#272c38;
+    --text:#f5f7fb;
+    --muted:#8991a3;
+    --accent:#7c5cff;
+    --accent2:#a98cff;
+    --danger:#ff5571;
+    --success:#42d392;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:240px;
+    background:#0f1219;
+    border-right:1px solid var(--border);
+    padding:22px 15px;
+    z-index:100;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:800;
+    margin:0 10px 30px;
+}
+
+.logo span{
+    color:var(--accent);
+}
+
+.nav-title{
+    color:#687083;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.3px;
+    margin:20px 10px 8px;
+}
+
+.nav-btn{
+    width:100%;
+    border:0;
+    background:transparent;
+    color:#aeb5c5;
+    padding:12px 13px;
+    border-radius:9px;
+    text-align:left;
+    cursor:pointer;
+    font-size:14px;
+    margin-bottom:4px;
+    transition:.2s;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+    background:#1b1e2a;
+    color:#fff;
+}
+
+.nav-btn.active{
+    box-shadow:inset 3px 0 var(--accent);
+}
+
+.nav-btn span{
+    display:inline-block;
+    width:28px;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+    margin-left:240px;
+    min-height:100vh;
+    padding-bottom:190px;
+}
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(11,13,18,.92);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid var(--border);
+    padding:15px 25px;
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
+
+.search{
+    flex:1;
+    position:relative;
+}
+
+.search input{
+    width:100%;
+    background:#151923;
+    border:1px solid var(--border);
+    color:white;
+    padding:13px 17px 13px 42px;
+    border-radius:10px;
+    outline:none;
+}
+
+.search input:focus{
+    border-color:var(--accent);
+}
+
+.search-icon{
+    position:absolute;
+    left:15px;
+    top:12px;
+    color:#70788b;
+}
+
+.top-btn{
+    border:1px solid var(--border);
+    background:#151923;
+    color:#dce0e8;
+    padding:11px 15px;
+    border-radius:9px;
+    cursor:pointer;
+}
+
+/* ================= CONTENT ================= */
+
+.content{
+    padding:28px;
+}
+
+.hero{
+    background:linear-gradient(135deg,#1b1830,#151a27);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:35px;
+    margin-bottom:25px;
+}
+
+.hero h1{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.filters{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.filter{
+    background:#151923;
+    border:1px solid var(--border);
+    color:#aeb5c5;
+    padding:9px 14px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.filter.active,
+.filter:hover{
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+}
+
+.section-title{
+    font-size:21px;
+    margin-bottom:16px;
+}
+
+/* ================= MUSIC GRID ================= */
+
+.music-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+    gap:18px;
+}
+
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px;
+    cursor:pointer;
+    transition:.2s;
+    position:relative;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    border-color:#3c4251;
+}
+
+.cover{
+    width:100%;
+    aspect-ratio:1;
+    border-radius:10px;
+    object-fit:cover;
+    background:#202532;
+}
+
+.card h3{
+    font-size:14px;
+    margin-top:11px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.card p{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:5px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.card-actions{
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+}
+
+.icon-btn{
+    flex:1;
+    border:1px solid var(--border);
+    background:#181c26;
+    color:#c9ced9;
+    border-radius:7px;
+    padding:7px;
+    cursor:pointer;
+}
+
+.icon-btn:hover{
+    background:#242936;
+}
+
+.favorite.active{
+    color:#ff5d78;
+}
+
+/* ================= PLAYER ================= */
+
+.player{
+    position:fixed;
+    left:240px;
+    right:0;
+    bottom:32px;
+    height:105px;
+    background:rgba(18,21,29,.98);
+    border-top:1px solid var(--border);
+    z-index:90;
+    display:flex;
+    align-items:center;
+    padding:14px 25px;
+    gap:22px;
+}
+
+.now-playing{
+    width:230px;
+    min-width:230px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.now-playing img{
+    width:60px;
+    height:60px;
+    object-fit:cover;
+    border-radius:8px;
+    background:#222735;
+}
+
+.now-playing-info{
+    min-width:0;
+}
+
+.now-playing-info strong{
+    display:block;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:13px;
+}
+
+.now-playing-info small{
+    display:block;
+    color:var(--muted);
+    margin-top:5px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.control{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:0;
+    background:#222735;
+    color:#fff;
+    cursor:pointer;
+}
+
+.control.play{
+    background:var(--accent);
+    font-size:16px;
+}
+
+.progress-area{
+    flex:1;
+}
+
+.progress-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.time{
+    color:#7f8798;
+    font-size:11px;
+    min-width:35px;
+}
+
+.progress{
+    flex:1;
+    height:5px;
+    appearance:none;
+    background:#303543;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.progress::-webkit-slider-thumb{
+    appearance:none;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--accent);
+}
+
+.volume{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.volume input{
+    width:90px;
+}
+
+/* ================= CREATOR CREDIT ================= */
+
+.creator-credit{
+    position:fixed;
+    left:240px;
+    right:0;
+    bottom:0;
+    height:32px;
+    background:#090b10;
+    border-top:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#737b8e;
+    font-size:11px;
+    letter-spacing:.3px;
+    z-index:95;
+}
+
+.creator-credit strong{
+    color:#a98cff;
+    margin-left:4px;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:200;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(600px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:#141821;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:25px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.close{
+    border:0;
+    background:transparent;
+    color:#aaa;
+    font-size:25px;
+    cursor:pointer;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group label{
+    display:block;
+    color:#9da5b6;
+    font-size:12px;
+    margin-bottom:7px;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    background:#0e1118;
+    border:1px solid var(--border);
+    color:#fff;
+    padding:11px;
+    border-radius:8px;
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+    border-color:var(--accent);
+}
+
+.primary-btn{
+    width:100%;
+    border:0;
+    background:var(--accent);
+    color:#fff;
+    padding:12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary-btn:hover{
+    background:var(--accent2);
+}
+
+.danger-btn{
+    border:1px solid #5c2632;
+    background:#28151b;
+    color:#ff7187;
+    padding:9px 12px;
+    border-radius:7px;
+    cursor:pointer;
+}
+
+/* ================= ADMIN ================= */
+
+.admin-song{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    margin-bottom:8px;
+}
+
+.admin-song img{
+    width:45px;
+    height:45px;
+    border-radius:6px;
+    object-fit:cover;
+}
+
+.admin-song-info{
+    flex:1;
+    min-width:0;
+}
+
+.admin-song-info strong,
+.admin-song-info small{
+    display:block;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.admin-song-info small{
+    color:var(--muted);
+    margin-top:4px;
+}
+
+/* ================= TOAST ================= */
+
+.toast{
+    position:fixed;
+    right:20px;
+    top:80px;
+    background:#1b202b;
+    border:1px solid var(--border);
+    padding:12px 17px;
+    border-radius:9px;
+    color:#fff;
+    transform:translateX(130%);
+    transition:.3s;
+    z-index:300;
+}
+
+.toast.show{
+    transform:translateX(0);
+}
+
+/* ================= MOBILE ================= */
+
+.mobile-menu{
+    display:none;
+}
+
+@media(max-width:800px){
+
+    .sidebar{
+        width:0;
+        padding:0;
+        overflow:hidden;
+        transition:.2s;
+    }
+
+    .sidebar.open{
+        width:240px;
+        padding:22px 15px;
+    }
+
+    .main{
+        margin-left:0;
+    }
+
+    .player{
+        left:0;
+        bottom:32px;
+        height:auto;
+        min-height:120px;
+        flex-wrap:wrap;
+        padding:10px 15px;
+        gap:10px;
+    }
+
+    .now-playing{
+        width:100%;
+        min-width:0;
+    }
+
+    .progress-area{
+        width:100%;
+        flex-basis:100%;
+    }
+
+    .volume{
+        display:none;
+    }
+
+    .mobile-menu{
+        display:block;
+        border:1px solid var(--border);
+        background:#151923;
+        color:#fff;
+        border-radius:8px;
+        padding:10px 12px;
+        cursor:pointer;
+    }
+
+    .creator-credit{
+        left:0;
+    }
+
+    .content{
+        padding:18px;
+    }
+
+    .hero{
+        padding:25px;
+    }
+
+    .hero h1{
+        font-size:27px;
+    }
+
+    .music-grid{
+        grid-template-columns:repeat(2,1fr);
+        gap:12px;
+    }
+}
+
+@media(max-width:430px){
+
+    .music-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .card{
+        padding:8px;
+    }
+
+    .topbar{
+        padding:10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        Tune<span>Box</span>
+    </div>
+
+    <div class="nav-title">Library</div>
+
+    <button class="nav-btn active" data-page="home">
+        <span>⌂</span> Home
+    </button>
+
+    <button class="nav-btn" data-page="songs">
+        <span>♫</span> Songs
+    </button>
+
+    <button class="nav-btn" data-page="bgm">
+        <span>♪</span> BGM
+    </button>
+
+    <button class="nav-btn" data-page="ringtones">
+        <span>◉</span> Ringtones
+    </button>
+
+    <button class="nav-btn" data-page="favorites">
+        <span>♥</span> Favorites
+    </button>
+
+    <button class="nav-btn" data-page="downloads">
+        <span>↓</span> Downloads
+    </button>
+
+    <button class="nav-btn" data-page="playlist">
+        <span>☷</span> My Playlist
+    </button>
+
+    <div class="nav-title">Management</div>
+
+    <button class="nav-btn" data-page="admin">
+        <span>⚙</span> Admin
+    </button>
+
+</aside>
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <div class="topbar">
+
+        <button class="mobile-menu" id="mobileMenu">
+            ☰
+        </button>
+
+        <div class="search">
+            <span class="search-icon">⌕</span>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search songs, artists, genres..."
+            >
+        </div>
+
+        <button class="top-btn" id="shuffleBtn">
+            🔀 Shuffle
+        </button>
+
+    </div>
+
+    <section class="content" id="content"></section>
+
+</main>
+
+<!-- ================= MUSIC PLAYER ================= -->
+
+<div class="player">
+
+    <div class="now-playing">
+
+        <img id="playerCover"
+             src="https://picsum.photos/200?random=1"
+             alt="cover">
+
+        <div class="now-playing-info">
+            <strong id="playerTitle">Nothing Playing</strong>
+            <small id="playerArtist">Select a song</small>
+        </div>
+
+    </div>
+
+    <div class="controls">
+
+        <button class="control" id="prevBtn">
+            ⏮
+        </button>
+
+        <button class="control play" id="playBtn">
+            ▶
+        </button>
+
+        <button class="control" id="nextBtn">
+            ⏭
+        </button>
+
+    </div>
+
+    <div class="progress-area">
+
+        <div class="progress-row">
+
+            <span class="time" id="currentTime">
+                0:00
+            </span>
+
+            <input
+                type="range"
+                class="progress"
+                id="progress"
+                min="0"
+                max="100"
+                value="0"
+            >
+
+            <span class="time" id="duration">
+                0:00
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="volume">
+
+        <button class="control" id="muteBtn">
+            🔊
+        </button>
+
+        <input
+            type="range"
+            id="volume"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.8"
+        >
+
+    </div>
+
+</div>
+
+<!-- ================= CREATOR CREDIT ================= -->
+
+<div class="creator-credit">
+    Created by <strong>Bharadwaja &amp; Uday Kiran</strong>
+</div>
+
+<!-- ================= ADMIN MODAL ================= -->
+
+<div class="modal" id="songModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h2 id="modalTitle">Add Song</h2>
+
+            <button class="close" id="closeModal">
+                ×
+            </button>
+        </div>
+
+        <div class="form-group">
+            <label>Title</label>
+            <input id="songTitle" type="text">
+        </div>
+
+        <div class="form-group">
+            <label>Artist</label>
+            <input id="songArtist" type="text">
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+
+            <select id="songCategory">
+                <option value="song">Song</option>
+                <option value="bgm">BGM</option>
+                <option value="ringtone">Ringtone</option>
+            </select>
+
+        </div>
+
+        <div class="form-group">
+            <label>Genre</label>
+            <input id="songGenre" type="text">
+        </div>
+
+        <div class="form-group">
+            <label>Cover Image URL</label>
+            <input id="songCover" type="url">
+        </div>
+
+        <div class="form-group">
+            <label>Audio URL</label>
+            <input id="songAudio" type="url">
+        </div>
+
+        <button class="primary-btn" id="saveSong">
+            Save Song
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ================= TOAST ================= -->
+
+<div class="toast" id="toast"></div>
+
+<audio id="audio"></audio>
+
+<script>
+
+/* =========================================================
+   DEFAULT MUSIC
+========================================================= */
+
+const defaultSongs = [
+
+    {
+        id:"song001",
+        title:"Midnight Dreams",
+        artist:"SoundHelix",
+        category:"song",
+        genre:"Electronic",
+        cover:"https://picsum.photos/500?random=11",
+        audio:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    },
+
+    {
+        id:"song002",
+        title:"Neon Nights",
+        artist:"SoundHelix",
+        category:"song",
+        genre:"Pop",
+        cover:"https://picsum.photos/500?random=12",
+        audio:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+    },
+
+    {
+        id:"song003",
+        title:"Ocean Memories",
+        artist:"SoundHelix",
+        category:"song",
+        genre:"Ambient",
+        cover:"https://picsum.photos/500?random=13",
+        audio:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+    },
+
+    {
+        id:"song004",
+        title:"Cinematic Journey",
+        artist:"SoundHelix",
+        category:"bgm",
+        genre:"Cinematic",
+        cover:"https://picsum.photos/500?random=14",
+        audio:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
+    },
+
+    {
+        id:"song005",
+        title:"Peaceful Piano",
+        artist:"SoundHelix",
+        category:"bgm",
+        genre:"Piano",
+        cover:"https://picsum.photos/500?random=15",
+        audio:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+    },
+
+    {
+        id:"song006",
+        title:"Digital Pulse",
+        artist:"SoundHelix",
+        category:"song",
+        genre:"Electronic",
+        cover:"https://picsum.photos/500?random=16",
+        audio:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"
+    },
+
+    {
+        id:"song007",
+        title:"Dream Bell",
+        artist:"SoundHelix",
+        category:"ringtone",
+        genre:"Ringtone",
+        cover:"https://picsum.photos/500?random=17",
+        audio:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3"
+    }
+
+];
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+const SONG_KEY = "tunebox_v2_songs";
+const FAVORITE_KEY = "tunebox_v2_favorites";
+const DOWNLOAD_KEY = "tunebox_v2_downloads";
+const PLAYLIST_KEY = "tunebox_v2_playlist";
+
+function loadJSON(key, fallback){
+
+    try{
+
+        const data = localStorage.getItem(key);
+
+        if(!data) return fallback;
+
+        return JSON.parse(data);
+
+    }catch(error){
+
+        console.warn("Storage error:",error);
+
+        return fallback;
+
+    }
+
+}
+
+function saveJSON(key,data){
+
+    localStorage.setItem(key,JSON.stringify(data));
+
+}
+
+
+/* =========================================================
+   APP STATE
+========================================================= */
+
+let songs = loadJSON(SONG_KEY, defaultSongs);
+
+if(!Array.isArray(songs)){
+    songs = [...defaultSongs];
+}
+
+let favorites = new Set(
+    loadJSON(FAVORITE_KEY,[])
+);
+
+let downloads = new Set(
+    loadJSON(DOWNLOAD_KEY,[])
+);
+
+let playlist = loadJSON(
+    PLAYLIST_KEY,
+    []
+);
+
+let currentPage = "home";
+let currentCategory = "all";
+let currentSongIndex = -1;
+let currentQueue = [];
+
+let editingSongId = null;
+
+const audio = document.getElementById("audio");
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const content = document.getElementById("content");
+const searchInput = document.getElementById("searchInput");
+
+const playerTitle =
+    document.getElementById("playerTitle");
+
+const playerArtist =
+    document.getElementById("playerArtist");
+
+const playerCover =
+    document.getElementById("playerCover");
+
+const playBtn =
+    document.getElementById("playBtn");
+
+const prevBtn =
+    document.getElementById("prevBtn");
+
+const nextBtn =
+    document.getElementById("nextBtn");
+
+const progress =
+    document.getElementById("progress");
+
+const currentTime =
+    document.getElementById("currentTime");
+
+const duration =
+    document.getElementById("duration");
+
+const volume =
+    document.getElementById("volume");
+
+const muteBtn =
+    document.getElementById("muteBtn");
+
+const toast =
+    document.getElementById("toast");
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message){
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(()=>{
+        toast.classList.remove("show");
+    },2200);
+
+}
+
+
+/* =========================================================
+   SAVE STATE
+========================================================= */
+
+function saveSongs(){
+    saveJSON(SONG_KEY,songs);
+}
+
+function saveFavorites(){
+    saveJSON(
+        FAVORITE_KEY,
+        [...favorites]
+    );
+}
+
+function saveDownloads(){
+    saveJSON(
+        DOWNLOAD_KEY,
+        [...downloads]
+    );
+}
+
+function savePlaylist(){
+    saveJSON(
+        PLAYLIST_KEY,
+        playlist
+    );
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document.querySelectorAll(".nav-btn").forEach(button=>{
+
+    button.addEventListener("click",()=>{
+
+        document
+            .querySelectorAll(".nav-btn")
+            .forEach(btn=>btn.classList.remove("active"));
+
+        button.classList.add("active");
+
+        currentPage = button.dataset.page;
+
+        currentCategory = "all";
+
+        render();
+
+        document
+            .getElementById("sidebar")
+            .classList.remove("open");
+
+    });
+
+});
+
+
+document
+.getElementById("mobileMenu")
+.addEventListener("click",()=>{
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+});
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+searchInput.addEventListener("input",()=>{
+
+    render();
+
+});
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function setCategory(category){
+
+    currentCategory = category;
+
+    render();
+
+}
+
+
+/* =========================================================
+   FILTER SONGS
+========================================================= */
+
+function filteredSongs(){
+
+    let list = [...songs];
+
+    if(currentPage === "songs"){
+        list = list.filter(s=>s.category==="song");
+    }
+
+    if(currentPage === "bgm"){
+        list = list.filter(s=>s.category==="bgm");
+    }
+
+    if(currentPage === "ringtones"){
+        list = list.filter(s=>s.category==="ringtone");
+    }
+
+    if(currentPage === "favorites"){
+        list = list.filter(s=>favorites.has(s.id));
+    }
+
+    if(currentPage === "downloads"){
+        list = list.filter(s=>downloads.has(s.id));
+    }
+
+    if(currentPage === "playlist"){
+
+        list = playlist
+            .map(id=>songs.find(s=>s.id===id))
+            .filter(Boolean);
+
+    }
+
+    if(currentCategory !== "all"){
+
+        list = list.filter(
+            s=>s.genre?.toLowerCase() ===
+            currentCategory.toLowerCase()
+        );
+
+    }
+
+    const query =
+        searchInput.value.trim().toLowerCase();
+
+    if(query){
+
+        list = list.filter(song=>
+
+            song.title.toLowerCase().includes(query) ||
+
+            song.artist.toLowerCase().includes(query) ||
+
+            song.genre.toLowerCase().includes(query)
+
+        );
+
+    }
+
+    return list;
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render(){
+
+    if(currentPage==="admin"){
+
+        renderAdmin();
+
+        return;
+
+    }
+
+    const list = filteredSongs();
+
+    currentQueue = list;
+
+    let title = "Music Library";
+
+    let description =
+        "Listen to your music, BGM and ringtones.";
+
+    if(currentPage==="home"){
+        title = "Welcome to TuneBox";
+        description =
+            "Your personal music library for songs, BGM and ringtones.";
+    }
+
+    if(currentPage==="songs"){
+        title = "Songs";
+        description = "Browse all your songs.";
+    }
+
+    if(currentPage==="bgm"){
+        title = "Background Music";
+        description = "Relaxing and cinematic background music.";
+    }
+
+    if(currentPage==="ringtones"){
+        title = "Ringtones";
+        description = "Your ringtone collection.";
+    }
+
+    if(currentPage==="favorites"){
+        title = "Favorites";
+        description = "Songs you have marked as favorites.";
+    }
+
+    if(currentPage==="downloads"){
+        title = "Downloads";
+        description = "Your downloaded music.";
+    }
+
+    if(currentPage==="playlist"){
+        title = "My Playlist";
+        description = "Your personal playlist.";
+    }
+
+    content.innerHTML = `
+
+        ${
+            currentPage==="home"
+            ?
+            `
+            <div class="hero">
+                <h1>${title}</h1>
+                <p>${description}</p>
+            </div>
+            `
+            :
+            `
+            <div style="margin-bottom:25px">
+                <h1>${title}</h1>
+                <p style="color:var(--muted);margin-top:7px">
+                    ${description}
+                </p>
+            </div>
+            `
+        }
+
+        <div class="filters">
+
+            <button
+                class="filter ${currentCategory==="all"?"active":""}"
+                onclick="setCategory('all')">
+                All
+            </button>
+
+            <button
+                class="filter ${currentCategory==="Pop"?"active":""}"
+                onclick="setCategory('Pop')">
+                Pop
+            </button>
+
+            <button
+                class="filter ${currentCategory==="Electronic"?"active":""}"
+                onclick="setCategory('Electronic')">
+                Electronic
+            </button>
+
+            <button
+                class="filter ${currentCategory==="Ambient"?"active":""}"
+                onclick="setCategory('Ambient')">
+                Ambient
+            </button>
+
+            <button
+                class="filter ${currentCategory==="Cinematic"?"active":""}"
+                onclick="setCategory('Cinematic')">
+                Cinematic
+            </button>
+
+            <button
+                class="filter ${currentCategory==="Piano"?"active":""}"
+                onclick="setCategory('Piano')">
+                Piano
+            </button>
+
+        </div>
+
+        <h2 class="section-title">
+            ${list.length} ${list.length===1?"Item":"Items"}
+        </h2>
+
+        <div class="music-grid">
+
+            ${
+                list.length
+                ?
+                list.map(songCard).join("")
+                :
+                `
+                <div style="
+                    grid-column:1/-1;
+                    text-align:center;
+                    padding:60px;
+                    color:var(--muted);
+                ">
+                    No music found.
+                </div>
+                `
+            }
+
+        </div>
+    `;
+
+}
+
+
+/* =========================================================
+   SONG CARD
+========================================================= */
+
+function songCard(song){
+
+    const isFav = favorites.has(song.id);
+
+    return `
+
+        <div class="card"
+             onclick="playSongById('${escapeAttr(song.id)}')">
+
+            <img
+                class="cover"
+                src="${escapeAttr(song.cover)}"
+                onerror="this.src='https://picsum.photos/500?random=99'"
+                alt=""
+            >
+
+            <h3>${escapeHTML(song.title)}</h3>
+
+            <p>${escapeHTML(song.artist)}</p>
+
+            <div class="card-actions">
+
+                <button
+                    class="icon-btn favorite ${isFav?"active":""}"
+                    onclick="event.stopPropagation();toggleFavorite('${escapeAttr(song.id)}')">
+                    ${isFav?"♥":"♡"}
+                </button>
+
+                <button
+                    class="icon-btn"
+                    onclick="event.stopPropagation();togglePlaylist('${escapeAttr(song.id)}')">
+                    ＋
+                </button>
+
+                <button
+                    class="icon-btn"
+                    onclick="event.stopPropagation();downloadSong('${escapeAttr(song.id)}')">
+                    ↓
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+function escapeAttr(value){
+
+    return escapeHTML(value);
+
+}
+
+
+/* =========================================================
+   PLAY SONG
+========================================================= */
+
+function playSongById(id){
+
+    const index =
+        currentQueue.findIndex(
+            song=>song.id===id
+        );
+
+    const song =
+        songs.find(
+            song=>song.id===id
+        );
+
+    if(!song) return;
+
+    currentQueue =
+        filteredSongs();
+
+    currentSongIndex =
+        currentQueue.findIndex(
+            item=>item.id===id
+        );
+
+    if(currentSongIndex<0){
+        currentQueue = [song];
+        currentSongIndex = 0;
+    }
+
+    audio.src = song.audio;
+
+    audio.play()
+        .then(()=>{
+            playBtn.textContent="⏸";
+        })
+        .catch(()=>{
+            showToast("Unable to play this audio URL.");
+        });
+
+    playerTitle.textContent = song.title;
+    playerArtist.textContent = song.artist;
+
+    playerCover.src = song.cover;
+
+}
+
+
+/* =========================================================
+   PLAY / PAUSE
+========================================================= */
+
+playBtn.addEventListener("click",()=>{
+
+    if(!audio.src){
+
+        if(currentQueue.length){
+            playSongById(currentQueue[0].id);
+        }
+
+        return;
+
+    }
+
+    if(audio.paused){
+
+        audio.play()
+            .then(()=>{
+                playBtn.textContent="⏸";
+            });
+
+    }else{
+
+        audio.pause();
+
+        playBtn.textContent="▶";
+
+    }
+
+});
+
+
+/* =========================================================
+   NEXT
+========================================================= */
+
+nextBtn.addEventListener("click",()=>{
+
+    if(!currentQueue.length) return;
+
+    currentSongIndex++;
+
+    if(currentSongIndex>=currentQueue.length){
+        currentSongIndex=0;
+    }
+
+    playSongById(
+        currentQueue[currentSongIndex].id
+    );
+
+});
+
+
+/* =========================================================
+   PREVIOUS
+========================================================= */
+
+prevBtn.addEventListener("click",()=>{
+
+    if(!currentQueue.length) return;
+
+    currentSongIndex--;
+
+    if(currentSongIndex<0){
+        currentSongIndex =
+            currentQueue.length-1;
+    }
+
+    playSongById(
+        currentQueue[currentSongIndex].id
+    );
+
+});
+
+
+/* =========================================================
+   AUTO NEXT
+========================================================= */
+
+audio.addEventListener("ended",()=>{
+
+    if(currentQueue.length){
+
+        currentSongIndex++;
+
+        if(currentSongIndex>=currentQueue.length){
+            currentSongIndex=0;
+        }
+
+        playSongById(
+            currentQueue[currentSongIndex].id
+        );
+
+    }
+
+});
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+audio.addEventListener("loadedmetadata",()=>{
+
+    duration.textContent =
+        formatTime(audio.duration);
+
+});
+
+audio.addEventListener("timeupdate",()=>{
+
+    if(!audio.duration) return;
+
+    progress.value =
+        (audio.currentTime/audio.duration)*100;
+
+    currentTime.textContent =
+        formatTime(audio.currentTime);
+
+});
+
+progress.addEventListener("input",()=>{
+
+    if(!audio.duration) return;
+
+    audio.currentTime =
+        (progress.value/100)*audio.duration;
+
+});
+
+
+function formatTime(seconds){
+
+    if(!isFinite(seconds)) return "0:00";
+
+    const minutes =
+        Math.floor(seconds/60);
+
+    const secs =
+        Math.floor(seconds%60)
+        .toString()
+        .padStart(2,"0");
+
+    return `${minutes}:${secs}`;
+
+}
+
+
+/* =========================================================
+   VOLUME
+========================================================= */
+
+audio.volume = .8;
+
+volume.addEventListener("input",()=>{
+
+    audio.volume =
+        Number(volume.value);
+
+    muteBtn.textContent =
+        audio.volume===0 ? "🔇" : "🔊";
+
+});
+
+
+muteBtn.addEventListener("click",()=>{
+
+    audio.muted = !audio.muted;
+
+    muteBtn.textContent =
+        audio.muted ? "🔇" : "🔊";
+
+});
+
+
+/* =========================================================
+   FAVORITES
+========================================================= */
+
+function toggleFavorite(id){
+
+    if(favorites.has(id)){
+
+        favorites.delete(id);
+
+        showToast("Removed from favorites.");
+
+    }else{
+
+        favorites.add(id);
+
+        showToast("Added to favorites.");
+
+    }
+
+    saveFavorites();
+
+    render();
+
+}
+
+
+/* =========================================================
+   PLAYLIST
+========================================================= */
+
+function togglePlaylist(id){
+
+    if(playlist.includes(id)){
+
+        playlist =
+            playlist.filter(item=>item!==id);
+
+        showToast("Removed from playlist.");
+
+    }else{
+
+        playlist.push(id);
+
+        showToast("Added to playlist.");
+
+    }
+
+    savePlaylist();
+
+    render();
+
+}
+
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+async function downloadSong(id){
+
+    const song =
+        songs.find(s=>s.id===id);
+
+    if(!song) return;
+
+    try{
+
+        const response =
+            await fetch(song.audio);
+
+        if(!response.ok){
+            throw new Error("Download failed");
+        }
+
+        const blob =
+            await response.blob();
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const a =
+            document.createElement("a");
+
+        a.href = url;
+
+        a.download =
+            `${song.title}.mp3`;
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        a.remove();
+
+        URL.revokeObjectURL(url);
+
+        downloads.add(song.id);
+
+        saveDownloads();
+
+        showToast("Download started.");
+
+        render();
+
+    }catch(error){
+
+        /* CORS fallback */
+
+        window.open(song.audio,"_blank");
+
+        downloads.add(song.id);
+
+        saveDownloads();
+
+        showToast(
+            "Opened audio URL. Browser may handle the download."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SHUFFLE
+========================================================= */
+
+document
+.getElementById("shuffleBtn")
+.addEventListener("click",()=>{
+
+    const list = filteredSongs();
+
+    if(!list.length){
+
+        showToast("No music available.");
+
+        return;
+
+    }
+
+    const random =
+        Math.floor(Math.random()*list.length);
+
+    currentQueue=list;
+
+    currentSongIndex=random;
+
+    playSongById(
+        list[random].id
+    );
+
+});
+
+
+/* =========================================================
+   ADMIN
+========================================================= */
+
+function renderAdmin(){
+
+    content.innerHTML = `
+
+        <div style="margin-bottom:25px">
+
+            <h1>Admin Panel</h1>
+
+            <p style="
+                color:var(--muted);
+                margin-top:7px;
+            ">
+                Manage your TuneBox music library.
+            </p>
+
+        </div>
+
+        <button
+            class="primary-btn"
+            style="margin-bottom:20px"
+            onclick="openAddSong()">
+            ＋ Add New Music
+        </button>
+
+        <h2 class="section-title">
+            Local Music Library
+        </h2>
+
+        <div>
+
+            ${
+                songs.length
+                ?
+                songs.map(adminSong).join("")
+                :
+                `<p style="color:var(--muted)">
+                    No songs available.
+                </p>`
+            }
+
+        </div>
+
+        <div style="
+            margin-top:35px;
+            padding:20px;
+            background:var(--panel);
+            border:1px solid var(--border);
+            border-radius:12px;
+        ">
+
+            <h3 style="margin-bottom:10px">
+                Supabase Cloud Library
+            </h3>
+
+            <p style="
+                color:var(--muted);
+                font-size:12px;
+                line-height:1.6;
+                margin-bottom:15px;
+            ">
+                Connect your Supabase project to load your
+                authorized music library from the cloud.
+            </p>
+
+            <div class="form-group">
+                <label>Supabase Project URL</label>
+                <input
+                    id="supabaseUrl"
+                    placeholder="https://your-project.supabase.co"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Supabase Publishable / Anon Key</label>
+                <input
+                    id="supabaseKey"
+                    type="password"
+                    placeholder="Your publishable/anon key"
+                >
+            </div>
+
+            <button
+                class="primary-btn"
+                id="connectCloudButton"
+                onclick="syncCloudLibrary()">
+                Connect & Sync Cloud Library
+            </button>
+
+            <p
+                id="cloudStatus"
+                style="
+                    color:var(--muted);
+                    font-size:12px;
+                    margin-top:12px;
+                ">
+            </p>
+
+        </div>
+
+    `;
+
+    const oldUrl =
+        localStorage.getItem("tunebox_supabase_url");
+
+    const oldKey =
+        localStorage.getItem("tunebox_supabase_key");
+
+    if(oldUrl)
+        document.getElementById("supabaseUrl").value=oldUrl;
+
+    if(oldKey)
+        document.getElementById("supabaseKey").value=oldKey;
+
+}
+
+
+/* =========================================================
+   ADMIN SONG
+========================================================= */
+
+function adminSong(song){
+
+    return `
+
+        <div class="admin-song">
+
+            <img
+                src="${escapeAttr(song.cover)}"
+                onerror="this.src='https://picsum.photos/100?random=80'"
+            >
+
+            <div class="admin-song-info">
+
+                <strong>
+                    ${escapeHTML(song.title)}
+                </strong>
+
+                <small>
+                    ${escapeHTML(song.artist)}
+                    ·
+                    ${escapeHTML(song.category)}
+                </small>
+
+            </div>
+
+            <button
+                class="icon-btn"
+                onclick="editSong('${escapeAttr(song.id)}')">
+                Edit
+            </button>
+
+            <button
+                class="danger-btn"
+                onclick="deleteSong('${escapeAttr(song.id)}')">
+                Delete
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   ADD SONG
+========================================================= */
+
+function openAddSong(){
+
+    editingSongId=null;
+
+    document.getElementById("modalTitle")
+        .textContent="Add Song";
+
+    document.getElementById("songTitle").value="";
+    document.getElementById("songArtist").value="";
+    document.getElementById("songCategory").value="song";
+    document.getElementById("songGenre").value="";
+    document.getElementById("songCover").value="";
+    document.getElementById("songAudio").value="";
+
+    document
+        .getElementById("songModal")
+        .classList.add("show");
+
+}
+
+
+/* =========================================================
+   EDIT SONG
+========================================================= */
+
+function editSong(id){
+
+    const song =
+        songs.find(s=>s.id===id);
+
+    if(!song) return;
+
+    editingSongId=id;
+
+    document.getElementById("modalTitle")
+        .textContent="Edit Song";
+
+    document.getElementById("songTitle").value =
+        song.title;
+
+    document.getElementById("songArtist").value =
+        song.artist;
+
+    document.getElementById("songCategory").value =
+        song.category;
+
+    document.getElementById("songGenre").value =
+        song.genre;
+
+    document.getElementById("songCover").value =
+        song.cover;
+
+    document.getElementById("songAudio").value =
+        song.audio;
+
+    document
+        .getElementById("songModal")
+        .classList.add("show");
+
+}
+
+
+/* =========================================================
+   SAVE SONG
+========================================================= */
+
+document
+.getElementById("saveSong")
+.addEventListener("click",()=>{
+
+    const title =
+        document.getElementById("songTitle").value.trim();
+
+    const artist =
+        document.getElementById("songArtist").value.trim();
+
+    const category =
+        document.getElementById("songCategory").value;
+
+    const genre =
+        document.getElementById("songGenre").value.trim();
+
+    const cover =
+        document.getElementById("songCover").value.trim();
+
+    const audioUrl =
+        document.getElementById("songAudio").value.trim();
+
+    if(!title || !artist || !audioUrl){
+
+        showToast(
+            "Title, artist and audio URL are required."
+        );
+
+        return;
+
+    }
+
+    if(editingSongId){
+
+        const index =
+            songs.findIndex(
+                s=>s.id===editingSongId
+            );
+
+        if(index>=0){
+
+            songs[index] = {
+
+                ...songs[index],
+
+                title,
+                artist,
+                category,
+                genre:genre || "Unknown",
+                cover:
+                    cover ||
+                    "https://picsum.photos/500?random=70",
+                audio:audioUrl
+
+            };
+
+        }
+
+        showToast("Music updated.");
+
+    }else{
+
+        songs.unshift({
+
+            id:
+                "song_"+Date.now(),
+
+            title,
+            artist,
+            category,
+
+            genre:
+                genre || "Unknown",
+
+            cover:
+                cover ||
+                "https://picsum.photos/500?random=70",
+
+            audio:audioUrl
+
+        });
+
+        showToast("Music added.");
+
+    }
+
+    saveSongs();
+
+    document
+        .getElementById("songModal")
+        .classList.remove("show");
+
+    render();
+
+});
+
+
+/* =========================================================
+   DELETE SONG
+========================================================= */
+
+function deleteSong(id){
+
+    const song =
+        songs.find(s=>s.id===id);
+
+    if(!song) return;
+
+    if(!confirm(
+        `Delete "${song.title}"?`
+    )){
+        return;
+    }
+
+    songs =
+        songs.filter(
+            s=>s.id!==id
+        );
+
+    favorites.delete(id);
+
+    downloads.delete(id);
+
+    playlist =
+        playlist.filter(
+            item=>item!==id
+        );
+
+    saveSongs();
+    saveFavorites();
+    saveDownloads();
+    savePlaylist();
+
+    showToast("Music deleted.");
+
+    render();
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+document
+.getElementById("closeModal")
+.addEventListener("click",()=>{
+
+    document
+        .getElementById("songModal")
+        .classList.remove("show");
+
+});
+
+
+document
+.getElementById("songModal")
+.addEventListener("click",(event)=>{
+
+    if(event.target.id==="songModal"){
+
+        document
+            .getElementById("songModal")
+            .classList.remove("show");
+
+    }
+
+});
+
+
+/* =========================================================
+   SUPABASE CLOUD SYNC
+========================================================= */
+
+async function syncCloudLibrary(){
+
+    const url =
+        document
+            .getElementById("supabaseUrl")
+            .value
+            .trim()
+            .replace(/\/$/,"");
+
+    const key =
+        document
+            .getElementById("supabaseKey")
+            .value
+            .trim();
+
+    const status =
+        document.getElementById("cloudStatus");
+
+    if(!url || !key){
+
+        status.textContent =
+            "Please enter both Supabase URL and key.";
+
+        return;
+
+    }
+
+    status.textContent =
+        "Connecting to Supabase...";
+
+    try{
+
+        localStorage.setItem(
+            "tunebox_supabase_url",
+            url
+        );
+
+        localStorage.setItem(
+            "tunebox_supabase_key",
+            key
+        );
+
+        const response =
+            await fetch(
+                `${url}/rest/v1/songs?select=id,title,artist,category,genre,cover,audio&order=created_at.desc`,
+                {
+                    headers:{
+                        "apikey":key,
+                        "Authorization":
+                            `Bearer ${key}`
+                    }
+                }
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+        const cloudSongs =
+            await response.json();
+
+        if(!Array.isArray(cloudSongs)){
+
+            throw new Error(
+                "Invalid cloud data."
+            );
+
+        }
+
+        const normalized =
+            cloudSongs
+                .map(normalizeSong)
+                .filter(song=>song.audio);
+
+        const cloudIds =
+            new Set(
+                normalized.map(
+                    song=>song.id
+                )
+            );
+
+        const localOnly =
+            songs.filter(
+                song=>!cloudIds.has(song.id)
+            );
+
+        songs = [
+            ...normalized,
+            ...localOnly
+        ];
+
+        saveSongs();
+
+        status.textContent =
+            `Connected successfully. ${normalized.length} cloud music items loaded.`;
+
+        showToast(
+            `${normalized.length} cloud items loaded.`
+        );
+
+        render();
+
+    }catch(error){
+
+        console.error(error);
+
+        status.textContent =
+            `Connection failed: ${error.message}`;
+
+        showToast(
+            "Could not connect to Supabase."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   NORMALIZE SUPABASE DATA
+========================================================= */
+
+function normalizeSong(row){
+
+    return {
+
+        id:
+            String(row.id),
+
+        title:
+            String(row.title || "Untitled"),
+
+        artist:
+            String(row.artist || "Unknown Artist"),
+
+        category:
+            String(row.category || "song").toLowerCase(),
+
+        genre:
+            String(row.genre || "Unknown"),
+
+        cover:
+            String(
+                row.cover ||
+                "https://picsum.photos/500?random=50"
+            ),
+
+        audio:
+            String(row.audio || "")
+
+    };
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+render();
+
+</script>
+
+</body>
+</html>
